@@ -1,0 +1,2 @@
+PLACEHOLDER TEXTURE: concrete
+Replace with a real texture file (png/tga/etc) when available.

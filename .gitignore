@@ -1,0 +1,20 @@
+# Settings
+config/settings.json
+
+# Real manifests (examples are committed)
+manifests/*.json
+!manifests/*.example.json
+
+# Local workspace artifacts (sibling folders)
+../_cache/
+../_source/
+../CIS_GAME/
+
+# Local workspace artifacts if created inside repo
+_cache/
+_source/
+CIS_GAME/
+
+# OS
+.DS_Store
+Thumbs.db

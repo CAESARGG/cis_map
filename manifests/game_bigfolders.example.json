@@ -1,0 +1,6 @@
+[
+  {"from": "gta/audio", "to": "gta/audio"},
+  {"from": "gta/anim", "to": "gta/anim"},
+  {"from": "gta/text", "to": "gta/text"},
+  {"from": "gta/cleo", "to": "gta/cleo"}
+]

@@ -1,0 +1,12 @@
+{
+  "mode": "mock",
+  "game_repo_url": "<PUT_CIS_GAME_REPO_URL_HERE>",
+  "game_dir_name": "CIS_GAME",
+  "drive_remote": "gdrive:",
+  "drive_base_game_path": "CIS/BASE_GAME",
+  "drive_source_max_path": "CIS/SOURCE_MAX",
+  "drive_source_blender_path": "CIS/SOURCE_BLENDER",
+  "workspace_root": "..",
+  "local_source_root": "../_source",
+  "local_cache_root": "../_cache"
+}

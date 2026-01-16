@@ -1,0 +1,2 @@
+PLACEHOLDER TEXTURE: grass
+Replace with a real texture file (png/tga/etc) when available.

@@ -1,0 +1,4 @@
+[
+  {"from": "props/urban", "to": "props/urban"},
+  {"from": "buildings/residential", "to": "buildings/residential"}
+]

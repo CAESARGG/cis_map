@@ -7,7 +7,8 @@ param(
 try {
     $feature = Get-WindowsOptionalFeature -Online -FeatureName DirectPlay -ErrorAction Stop
 } catch {
-    Write-Log "Failed to query DirectPlay. Ensure you are on Windows 10/11." -Level ERROR
+    Write-Log "Failed to query DirectPlay. This usually happens if you are not on Windows 10/11 or PowerShell is not elevated." -Level ERROR
+    Write-Log "Try: run PowerShell as Administrator and re-run the wizard." -Level WARN
     exit 1
 }
 

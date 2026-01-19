@@ -24,12 +24,12 @@ powershell -ExecutionPolicy Bypass -File .\scripts\wizard.ps1
 ## Где что хранится (Git vs Drive)
 - **Git (CIS_MAP):** скрипты, манифесты `.example.json`, общие текстуры `assets_textures`, документация.
 - **Google Drive (Drive mode):** большие игровые файлы и исходники сцен (MAX/Blender).
-- **Локально:** `../CIS_GAME`, `../_source`, `../_cache` (не коммитятся).
+- **Локально (по умолчанию в этой папке):** `./CIS_GAME`, `./_source`, `./_cache` (не коммитятся).
 
 ## Ручной экспорт
 Экспорт DFF/COL/TXD не автоматизирован. После экспорта вручную копируйте файлы в:
-- `../CIS_GAME/gta/models` или
-- `../CIS_GAME/modloader/DEV_MIAMI` (пример, замените на ваш мод-путь).
+- `./CIS_GAME/gta/models` или
+- `./CIS_GAME/modloader/DEV_MIAMI` (пример, замените на ваш мод-путь).
 
 ## Локальный тест (Mock)
 Команды:
@@ -45,9 +45,9 @@ powershell -ExecutionPolicy Bypass -File .\scripts\wizard.ps1
 - Setup sources: **Yes**, выбрать **Both**
 
 Ожидаемый результат:
-- `../CIS_GAME` создан (stub, если нет доступа к удалённому репо)
-- `../CIS_GAME/gta/audio` и др. заполнены из `mock_drive`
-- `../_source/max` и `../_source/blender` заполнены
-- `../_source/_shared_textures` синхронизирован из `assets_textures`
+- `./CIS_GAME` создан (stub, если нет доступа к удалённому репо)
+- `./CIS_GAME/gta/audio` и др. заполнены из `mock_drive`
+- `./_source/max` и `./_source/blender` заполнены
+- `./_source/_shared_textures` синхронизирован из `assets_textures`
 
 Подробнее о рабочих сценариях — в `docs/WORKFLOWS.md`.

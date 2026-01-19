@@ -22,7 +22,8 @@ Ensure-Directory -Path $sourceRoot
 $targetRoot = Join-Path $sourceRoot $SourceType
 Ensure-Directory -Path $targetRoot
 
-$mockRoot = Join-Path $RepoRoot ("mock_drive/{0}" -f (if ($SourceType -eq 'max') { 'SOURCE_MAX' } else { 'SOURCE_BLENDER' }))
+$mockSubdir = if ($SourceType -eq 'max') { 'SOURCE_MAX' } else { 'SOURCE_BLENDER' }
+$mockRoot = Join-Path $RepoRoot ("mock_drive/$mockSubdir")
 $remoteBase = if ($SourceType -eq 'max') { $Settings.drive_source_max_path } else { $Settings.drive_source_blender_path }
 
 foreach ($entry in $entries) {

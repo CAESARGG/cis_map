@@ -14,9 +14,58 @@ function Initialize-GameStub {
     param([string] $Path)
     Write-Log "Creating stub CIS_GAME at $Path" -Level WARN
     Ensure-Directory -Path $Path
+
+    # Minimal GTA folder structure expected by the pipeline
     Ensure-Directory -Path (Join-Path $Path 'gta')
-    Set-Content -Path (Join-Path $Path 'ASSETS_SNAPSHOT.txt') -Value "Stub game snapshot. Replace with real data."
-    Set-Content -Path (Join-Path $Path 'README.md') -Value "Stub CIS_GAME. Replace with real repo contents."
+    Ensure-Directory -Path (Join-Path $Path 'gta/data')
+    Ensure-Directory -Path (Join-Path $Path 'gta/models')
+    Ensure-Directory -Path (Join-Path $Path 'gta/modloader/DEV_MIAMI')
+
+    # Placeholder snapshot marker (not used in current pipeline, but handy later)
+    Set-Content -Path (Join-Path $Path 'ASSETS_SNAPSHOT.txt') -Value "mock" -Encoding UTF8
+
+    # Stub README
+    @(
+        "# CIS_GAME (stub)",
+        "", 
+        "This folder was created automatically by CIS_MAP in MOCK mode.",
+        "Replace it by cloning the real CIS_GAME repository when available.",
+        ""
+    ) | Set-Content -Path (Join-Path $Path 'README.md') -Encoding UTF8
+
+    # If this is a stub, make sure big folders stay untracked even if someone runs git init later.
+    @(
+        "# Big vanilla GTA folders (downloaded from Drive)",
+        "gta/audio/",
+        "gta/anim/",
+        "gta/text/",
+        "gta/cleo/",
+        "gta/SAMP/",
+        "gta/scripts/",
+        "", 
+        "# Executables / DLLs", 
+        "gta/*.exe",
+        "gta/*.dll",
+        "", 
+        "# IMG archives (usually huge)",
+        "gta/models/*.img"
+    ) | Set-Content -Path (Join-Path $Path '.gitignore') -Encoding UTF8
+
+    # Optional: initialize as a git repo for convenience (does not require network)
+    if (Get-Command git -ErrorAction SilentlyContinue) {
+        try {
+            if (-not (Test-Path (Join-Path $Path '.git'))) {
+                Push-Location $Path
+                git init | Out-Null
+                git add -A | Out-Null
+                git commit -m "Stub CIS_GAME created by CIS_MAP" | Out-Null
+                Pop-Location
+            }
+        } catch {
+            try { Pop-Location } catch {}
+            Write-Log "Stub git init/commit skipped: $($_.Exception.Message)" -Level WARN
+        }
+    }
 }
 
 if (Test-Path $gameDir) {
@@ -25,8 +74,8 @@ if (Test-Path $gameDir) {
         try {
             Write-Log "Updating CIS_GAME repository." -Level INFO
             Push-Location $gameDir
-            git fetch --all
-            git pull
+            git fetch --all | Out-Null
+            git pull | Out-Null
             Pop-Location
             Write-Log "CIS_GAME updated." -Level SUCCESS
         } catch {

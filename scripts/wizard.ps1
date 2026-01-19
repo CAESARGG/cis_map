@@ -81,6 +81,11 @@ $sharedTexturesDir = if ($doSources) { Join-Path $sourceRoot '_shared_textures' 
 
 & "$PSScriptRoot/verify.ps1" -CheckDirectPlay:$doDirectPlay -GameDir $gameDir -BigFolders $bigFolderTargets -SourceDirs $sourceDirs -SharedTexturesDir $sharedTexturesDir
 
+if ($LASTEXITCODE -ne 0) {
+    Write-Log "Setup verification failed (exit code $LASTEXITCODE)." -Level ERROR
+    exit $LASTEXITCODE
+}
+
 Write-Log "Wizard completed." -Level SUCCESS
 Write-Host "" 
 Write-Host "Next steps:" 

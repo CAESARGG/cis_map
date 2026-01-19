@@ -8,6 +8,8 @@ param(
 
 . "$PSScriptRoot/helpers.ps1"
 
+$hadError = $false
+
 if ($CheckDirectPlay) {
     try {
         $feature = Get-WindowsOptionalFeature -Online -FeatureName DirectPlay -ErrorAction Stop
@@ -26,6 +28,7 @@ if ($GameDir) {
         Write-Log "CIS_GAME/gta exists." -Level SUCCESS
     } else {
         Write-Log "CIS_GAME/gta missing." -Level ERROR
+        $hadError = $true
     }
 }
 
@@ -34,6 +37,7 @@ foreach ($folder in ($BigFolders | Where-Object { $_ })) {
         Write-Log "Big folder ok: $folder" -Level SUCCESS
     } else {
         Write-Log "Big folder missing: $folder" -Level WARN
+        $hadError = $true
     }
 }
 
@@ -42,6 +46,7 @@ foreach ($dir in ($SourceDirs | Where-Object { $_ })) {
         Write-Log "Source dir ok: $dir" -Level SUCCESS
     } else {
         Write-Log "Source dir missing: $dir" -Level WARN
+        $hadError = $true
     }
 }
 
@@ -50,5 +55,13 @@ if ($SharedTexturesDir) {
         Write-Log "Shared textures ok: $SharedTexturesDir" -Level SUCCESS
     } else {
         Write-Log "Shared textures missing: $SharedTexturesDir" -Level WARN
+        $hadError = $true
     }
 }
+
+if ($hadError) {
+    Write-Log "Verify completed with errors." -Level ERROR
+    exit 1
+}
+
+exit 0

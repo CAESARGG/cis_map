@@ -5,12 +5,8 @@ config/settings.json
 manifests/*.json
 !manifests/*.example.json
 
-# Local workspace artifacts (sibling folders)
-../_cache/
-../_source/
-../CIS_GAME/
-
-# Local workspace artifacts if created inside repo
+# Local workspace artifacts (ONLY if you choose to create them inside this repo)
+# Note: .gitignore cannot ignore sibling folders outside the repo.
 _cache/
 _source/
 CIS_GAME/

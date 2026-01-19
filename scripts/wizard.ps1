@@ -39,6 +39,14 @@ if ($doDirectPlay) {
     & "$PSScriptRoot/directplay.ps1"
 }
 
+# Create cache folder even if currently unused (future-proof)
+Ensure-Directory -Path $cacheRoot
+
+# If Drive mode and we actually need Drive downloads, ensure rclone is available (auto-install locally if missing)
+if ($settings.mode -eq 'drive' -and ($doBigFiles -or $doSources)) {
+    $null = Ensure-Rclone -Settings $settings
+}
+
 if ($doGame) {
     $gameDir = & "$PSScriptRoot/ensure_game.ps1" -RepoRoot $repoRoot -Settings $settings -CloneRemote:$cloneRemote
 }

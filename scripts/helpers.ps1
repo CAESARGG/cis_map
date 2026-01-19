@@ -135,3 +135,81 @@ function Resolve-WorkspacePath {
     )
     return (Resolve-Path (Join-Path $RepoRoot $RelativePath)).Path
 }
+
+function Ensure-Rclone {
+    <#
+      Ensures rclone is available.
+      - If Settings.rclone_exe points to an existing file, uses it.
+      - Else tries to find 'rclone' in PATH.
+      - Else downloads and installs rclone locally into: <repo>\_tools\rclone\rclone.exe
+      Download is performed via Invoke-WebRequest (alias: wget in PowerShell).
+    #>
+    param(
+        [Parameter(Mandatory)] $Settings
+    )
+
+    # 1) Explicit path in settings
+    $hasRcloneExe = ($Settings.PSObject.Properties.Name -contains 'rclone_exe')
+    if ($hasRcloneExe -and -not [string]::IsNullOrWhiteSpace($Settings.rclone_exe)) {
+        if (Test-Path $Settings.rclone_exe) {
+            return $Settings.rclone_exe
+        }
+        Write-Log "rclone_exe is set but file not found: $($Settings.rclone_exe)" -Level WARN
+    }
+
+    # 2) PATH
+    $cmd = Get-Command rclone -ErrorAction SilentlyContinue
+    if ($cmd) {
+        return $cmd.Source
+    }
+
+    # 3) Local install into repo
+    $repoRoot = Split-Path -Parent $PSScriptRoot  # ...\CIS_MAP
+    $installDir = Join-Path $repoRoot "_tools\rclone"
+    $exePath = Join-Path $installDir "rclone.exe"
+
+    if (Test-Path $exePath) {
+        return $exePath
+    }
+
+    Ensure-Directory -Path $installDir
+
+    $zipUrl = "https://downloads.rclone.org/rclone-current-windows-amd64.zip"
+    $zipPath = Join-Path $env:TEMP "rclone-current.zip"
+    $tmpDir = Join-Path $env:TEMP ("rclone_unpack_" + [Guid]::NewGuid().ToString("N"))
+
+    Write-Log "rclone not found. Installing locally to $installDir" -Level INFO
+
+    try {
+        # Invoke-WebRequest is aliased as 'wget' in Windows PowerShell.
+        Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath -UseBasicParsing
+
+        Expand-Archive -Path $zipPath -DestinationPath $tmpDir -Force
+
+        $foundExe = Get-ChildItem -Path $tmpDir -Recurse -Filter "rclone.exe" | Select-Object -First 1
+        if (-not $foundExe) {
+            throw "Downloaded archive does not contain rclone.exe"
+        }
+
+        Copy-Item -Path $foundExe.FullName -Destination $exePath -Force
+
+        & $exePath version | Out-Null
+        Write-Log "rclone installed: $exePath" -Level SUCCESS
+
+        # Persist path into settings object for this run
+        if (-not $hasRcloneExe) {
+            $Settings | Add-Member -NotePropertyName rclone_exe -NotePropertyValue $exePath -Force
+        } else {
+            $Settings.rclone_exe = $exePath
+        }
+
+        return $exePath
+    }
+    catch {
+        throw "Failed to install rclone automatically: $($_.Exception.Message)"
+    }
+    finally {
+        Remove-Item -Force $zipPath -ErrorAction SilentlyContinue
+        Remove-Item -Recurse -Force $tmpDir -ErrorAction SilentlyContinue
+    }
+}

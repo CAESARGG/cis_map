@@ -8,6 +8,7 @@ _cache/
 _source/
 3D_Dev/
 CIS_GAME/
+_tools/
 
 # OS
 .DS_Store

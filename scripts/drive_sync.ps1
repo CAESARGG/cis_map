@@ -25,7 +25,26 @@ if ($Mode -eq 'mock') {
 }
 
 if (-not (Get-Command rclone -ErrorAction SilentlyContinue)) {
-    Write-Log "rclone not found in PATH. Install it or switch to mock mode." -Level ERROR
+    # Try auto-install locally (CIS_MAP/_tools/rclone/rclone.exe)
+    try {
+        $null = Ensure-Rclone -Settings $Settings
+    } catch {
+        Write-Log "rclone not found and auto-install failed: $($_.Exception.Message)" -Level ERROR
+        exit 1
+    }
+}
+
+# Resolve rclone exe (from settings or PATH)
+$rcloneExe = $null
+if (($Settings.PSObject.Properties.Name -contains 'rclone_exe') -and (Test-Path $Settings.rclone_exe)) {
+    $rcloneExe = $Settings.rclone_exe
+} else {
+    $cmdPath = Get-Command rclone -ErrorAction SilentlyContinue
+    if ($cmdPath) { $rcloneExe = $cmdPath.Source }
+}
+
+if (-not $rcloneExe) {
+    Write-Log "rclone executable not available." -Level ERROR
     exit 1
 }
 
@@ -34,7 +53,7 @@ $cmd = if ($UseSync.IsPresent -and $Force.IsPresent) { 'sync' } else { 'copy' }
 Write-Log "rclone $cmd $remotePath -> $To" -Level INFO
 
 $rcloneArgs = @($cmd, $remotePath, $To, '--progress')
-$rcloneResult = & rclone @rcloneArgs
+$rcloneResult = & $rcloneExe @rcloneArgs
 if ($LASTEXITCODE -ne 0) {
     Write-Log "rclone failed with exit code $LASTEXITCODE" -Level ERROR
     exit $LASTEXITCODE

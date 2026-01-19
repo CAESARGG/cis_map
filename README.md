@@ -14,6 +14,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\wizard.ps1
 
 ## Как перейти в режим Drive
 1. Установите и настройте rclone (см. `docs/DRIVE_SETUP.md`).
+   - Примечание: в режиме `drive` мастер может автоматически скачать `rclone` локально в `./_tools/rclone/` если он не найден в PATH.
 2. Скопируйте `config/settings.example.json` в `config/settings.json`.
 3. Вставьте реальные значения в `settings.json`:
    - `game_repo_url`: URL репозитория `CIS_GAME` (PUT HERE).

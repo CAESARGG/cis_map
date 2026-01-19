@@ -6,6 +6,7 @@
   "drive_base_game_path": "CIS/BASE_GAME",
   "drive_source_max_path": "CIS/SOURCE_MAX",
   "drive_source_blender_path": "CIS/SOURCE_BLENDER",
+  "rclone_exe": "",
   "workspace_root": ".",
   "local_source_root": "./_source",
   "local_cache_root": "./_cache"

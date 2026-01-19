@@ -1,6 +1,3 @@
-# Settings
-config/settings.json
-
 # Real manifests (examples are committed)
 manifests/*.json
 !manifests/*.example.json
@@ -9,6 +6,7 @@ manifests/*.json
 # Note: .gitignore cannot ignore sibling folders outside the repo.
 _cache/
 _source/
+3D_Dev/
 CIS_GAME/
 
 # OS
